@@ -2,11 +2,17 @@
 output: html_document
 ---
 
+<style>
+.html-widget {
+    margin: auto;
+}
+</style>
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r pressure, echo=FALSE, message=FALSE, warning=FALSE}
+```{r pressure, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
 rm(list = ls())
 library(openxlsx)
 library(sf)
@@ -58,5 +64,6 @@ leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>%
     addPolygons(stroke = FALSE, 
                 smoothFactor = 0.8, 
                 fillColor = ~pal(Pourcentage),
-                fillOpacity = 0.6)
+                fillOpacity = 0.6,
+                label = ~paste0(name,": ", round(Pourcentage*100, 2)))
 ```

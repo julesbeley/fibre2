@@ -49,7 +49,8 @@ leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>%
     addPolygons(stroke = FALSE, 
                 smoothFactor = 0.8, 
                 fillColor = ~pal(Pourcentage),
-                fillOpacity = 0.6)
+                fillOpacity = 0.6,
+                label = ~paste0(name,": ", round(Pourcentage*100, 2)))
 
 #pdf("./test.pdf")
 #ggplot() +
