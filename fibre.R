@@ -56,5 +56,7 @@ leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>%
 #    geom_sf(data = merged, color = NA, aes(fill = Pourcentage))
 #dev.off()
 
+#https://stackoverflow.com/questions/35386124/embedding-on-github
+
 # simplify original communes with mapshaper
 # C:\Users\jules>curl -f -o communes.zip --url "https://wambachers-osm.website/boundaries/exportBoundaries?cliVersion=1.0&cliKey=6f4b0380-1ef1-4cdf-ae75-0ce88e32e15a&exportAreas=land&from_AL=8&to_AL=8&exportFormat=json&union=false&selected=1403916"
