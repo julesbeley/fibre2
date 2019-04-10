@@ -50,7 +50,12 @@ leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>%
                 smoothFactor = 0.8, 
                 fillColor = ~pal(Pourcentage),
                 fillOpacity = 0.6,
-                label = ~paste0(name,": ", round(Pourcentage*100, 2)))
+                label = ~paste0(name,": ", round(Pourcentage*100, 2))) %>% 
+    addLegend("bottomright", pal = pal, values = ~round(Pourcentage*100, 2),
+              title = "Part de bâtiments raccordables en fibre optique, 2019",
+              labFormat = labelFormat(prefix = "$"),
+              opacity = 1
+    )
 
 #pdf("./test.pdf")
 #ggplot() +
