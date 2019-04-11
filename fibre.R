@@ -47,15 +47,17 @@ pal <- colorNumeric("viridis", NULL)
 leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>% 
     addTiles() %>% 
     addPolygons(stroke = FALSE, 
-                smoothFactor = 0.8, 
+                smoothFactor = 0.2, 
                 fillColor = ~pal(Pourcentage),
                 fillOpacity = 0.6,
                 label = ~paste0(name,": ", round(Pourcentage*100, 2))) %>% 
     addLegend("bottomright", pal = pal, values = ~round(Pourcentage*100, 2),
-              title = "Part de bâtiments raccordables en fibre optique, 2019",
-              labFormat = labelFormat(prefix = "$"),
-              opacity = 1
-    )
+              title = "Part des bâtiments raccordables en fibre optique, 2019",
+              labFormat = labelFormat(suffix = "%"),
+              opacity = 1) -> m
+
+library(htmlwidgets)
+saveWidget(m, file = "m.html")
 
 #pdf("./test.pdf")
 #ggplot() +
