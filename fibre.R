@@ -44,7 +44,7 @@ merged <- merged %>% select(name, Pourcentage, geometry, `Code commune`)
 
 pal <- colorNumeric("viridis", NULL)
 
-leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>% 
+leaflet(merged, options = leafletOptions(preferCanvas = TRUE, height = 300)) %>% 
     addTiles() %>% 
     addPolygons(stroke = FALSE, 
                 smoothFactor = 0.2, 
@@ -57,13 +57,18 @@ leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>%
               labFormat = labelFormat(suffix = "%"),
               opacity = 1) -> m
 
-library(htmlwidgets)
-saveWidget(m, file = "m.html", selfcontained = FALSE)
+library(widgetframe)
+frameWidget(m)
+
+#library(htmlwidgets)
+#saveWidget(m, file = "m.html", selfcontained = FALSE)
 
 #pdf("./test.pdf")
 #ggplot() +
 #    geom_sf(data = merged, color = NA, aes(fill = Pourcentage))
 #dev.off()
+
+# https://stackoverflow.com/questions/34439928/embedding-an-r-htmlwidget-into-existing-webpage
 
 #https://stackoverflow.com/questions/35386124/embedding-on-github
 
