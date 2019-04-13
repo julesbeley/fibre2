@@ -52,12 +52,13 @@ leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>%
                 fillOpacity = 0.6,
                 label = ~paste0(name,": ", round(Pourcentage*100, 2))) %>% 
     addLegend("bottomright", pal = pal, values = ~round(Pourcentage*100, 2),
-              title = "Part des bâtiments raccordables en fibre optique, 2019",
+              title = "Part des bâtiments 
+              raccordables en fibre optique, 2019",
               labFormat = labelFormat(suffix = "%"),
               opacity = 1) -> m
 
 library(htmlwidgets)
-saveWidget(m, file = "m.html")
+saveWidget(m, file = "m.html", selfcontained = FALSE)
 
 #pdf("./test.pdf")
 #ggplot() +
