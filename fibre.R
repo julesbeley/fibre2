@@ -44,21 +44,21 @@ merged <- merged %>% select(name, Pourcentage, geometry, `Code commune`)
 
 pal <- colorNumeric("viridis", NULL)
 
-leaflet(merged, options = leafletOptions(preferCanvas = TRUE, height = 300)) %>% 
+leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>% 
     addTiles() %>% 
     addPolygons(stroke = FALSE, 
                 smoothFactor = 0.2, 
                 fillColor = ~pal(Pourcentage),
                 fillOpacity = 0.6,
-                label = ~paste0(name,": ", round(Pourcentage*100, 2))) %>% 
+                label = ~paste0(name,": ", round(Pourcentage * 100, 2))) %>% 
     addLegend("bottomright", pal = pal, values = ~round(Pourcentage*100, 2),
-              title = "Part des bâtiments 
-              raccordables en fibre optique, 2019",
-              labFormat = labelFormat(suffix = "%"),
-              opacity = 1) -> m
+              title = "Part des bâtiments<br> raccordables FTTH, 2019",
+              labFormat = labelFormat(suffix = " %"),
+              opacity = 0.7) -> m
 
-library(widgetframe)
-frameWidget(m)
+#library(widgetframe)
+#frameWidget(m)
+m
 
 #library(htmlwidgets)
 #saveWidget(m, file = "m.html", selfcontained = FALSE)
