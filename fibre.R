@@ -42,7 +42,7 @@ merged <- left_join(geo, deploiement, by = "Nom commune")
 
 merged <- merged %>% select(name, Pourcentage, geometry, `Code commune`)
 
-pal <- colorNumeric("viridis", NULL)
+pal <- colorNumeric("viridis", NULL, reverse = TRUE)
 
 leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>% 
     addTiles() %>% 
