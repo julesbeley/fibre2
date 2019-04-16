@@ -5,6 +5,9 @@ library(tidyverse)
 library(leaflet)
 library(viridis)
 library(rmapshaper)
+library(sf)
+library(units)
+library(gdata)
 
 read_sf("./communes.json") -> geo
 
@@ -37,12 +40,14 @@ for (i in 1:nrow(deploiement)){
 deploiement$Pourcentage <- deploiement$Raccordables/deploiement$Logements
 
 geo$`Nom commune` <- geo$name
+geo$area <- set_units(st_area(geo$geometry), km^2)
+
+read.csv("./pop2.csv", stringsAsFactors = FALSE) -> pop
 
 merged <- left_join(geo, deploiement, by = "Nom commune") 
+merged <- merged %>% select(name, Pourcentage, area, geometry, `Code commune`)
 
-merged <- merged %>% select(name, Pourcentage, geometry, `Code commune`)
-
-pal <- colorNumeric("magma", NULL, reverse = TRUE)
+pal <- colorNumeric("viridis", NULL)
 
 # css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
 
