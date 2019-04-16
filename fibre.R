@@ -42,7 +42,9 @@ merged <- left_join(geo, deploiement, by = "Nom commune")
 
 merged <- merged %>% select(name, Pourcentage, geometry, `Code commune`)
 
-pal <- colorNumeric("viridis", NULL, reverse = TRUE)
+pal <- colorNumeric("magma", NULL, reverse = TRUE)
+
+# css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
 
 leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>% 
     addTiles() %>% 
@@ -54,11 +56,11 @@ leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>%
     addLegend("bottomright", pal = pal, values = ~round(Pourcentage*100, 2),
               title = "Part des bâtiments<br> raccordables FTTH, 2019",
               labFormat = labelFormat(suffix = " %"),
-              opacity = 0.7) -> m
+              opacity = 0.7) 
 
 #library(widgetframe)
 #frameWidget(m)
-m
+#https://github.com/rstudio/leaflet/issues/615
 
 #library(htmlwidgets)
 #saveWidget(m, file = "m.html", selfcontained = FALSE)
