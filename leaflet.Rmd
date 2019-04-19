@@ -9,7 +9,7 @@ output: html_document
 </style>
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.width=5.6, fig.height=4)
+knitr::opts_chunk$set(echo = TRUE, fig.width=7, fig.height=5)
 ```
 
 ```{r pressure, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
@@ -20,6 +20,8 @@ library(tidyverse)
 library(leaflet)
 library(viridis)
 library(rmapshaper)
+library(sf)
+library(units)
 
 read_sf("./communes.json") -> geo
 
@@ -52,24 +54,57 @@ for (i in 1:nrow(deploiement)){
 deploiement$Pourcentage <- deploiement$Raccordables/deploiement$Logements
 
 geo$`Nom commune` <- geo$name
+geo$area <- set_units(st_area(geo$geometry), km^2)
+
+read.csv("./pop2.csv", 
+         stringsAsFactors = FALSE,
+         encoding = "UTF8") -> pop
+pop <- pop[,-1]
+colnames(pop) <- c("Code commune", "nom", "population")
+pop %>% 
+    group_by(`Code commune`) %>% 
+    summarise(Population = round(sum(population))) -> pop
 
 merged <- left_join(geo, deploiement, by = "Nom commune") 
+merged <- merged %>% select(name, Pourcentage, area, geometry, `Code commune`)
+merged <- left_join(merged, pop, by = "Code commune") 
+merged %>% mutate(density = as.vector(Population / area)) %>% 
+    select(name, Pourcentage, `Code commune`, density, geometry) -> merged
 
-merged <- merged %>% select(name, Pourcentage, geometry, `Code commune`)
-
-pal <- colorNumeric("viridis", NULL)
+palftth <- colorNumeric("viridis", NULL)
+paldens <- colorQuantile("viridis", NULL, n = 5)
 
 # css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
+
+rm(deploiement, geo, pop)
 
 leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>% 
     addTiles() %>% 
     addPolygons(stroke = FALSE, 
                 smoothFactor = 0.2, 
-                fillColor = ~pal(Pourcentage),
+                fillColor = ~palftth(Pourcentage),
                 fillOpacity = 0.6,
-                label = ~paste0(name,": ", round(Pourcentage * 100, 2))) %>% 
-    addLegend("bottomright", pal = pal, values = ~round(Pourcentage*100, 2),
+                label = ~paste0(name,": ", round(Pourcentage * 100, 2)),
+                group = "FTTH") %>% 
+    addLegend("bottomright", 
+              pal = palftth, 
+              values = ~round(Pourcentage * 100, 2),
               title = "Part des bâtiments<br> raccordables FTTH, 2019",
-              labFormat = labelFormat(suffix = " %"),
-              opacity = 0.7)
+              labFormat = labelFormat(suffix = "%"),
+              opacity = 0.7,
+              group = "FTTH") %>% 
+    addPolygons(stroke = FALSE, 
+            smoothFactor = 0.2, 
+            fillColor = ~paldens(density),
+            fillOpacity = 0.6,
+            label = ~paste0(name,": ", round(density, 2)),
+            group = "Densité de population") %>% 
+    addLegend("bottomright", 
+              pal = paldens, 
+              values = ~round(density, 2),
+              title = "Quantiles de densité<br> de population, 2016",
+              opacity = 0.7,
+              group = "Densité de population") %>% 
+    addLayersControl(baseGroups = c("FTTH", "Densité de population"),
+                     options = layersControlOptions(collapsed = FALSE))
 ```
