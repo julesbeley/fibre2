@@ -26,8 +26,13 @@ place <- function(search) {
         coord_map(projection = "lambert", 
                   parameters = c(10, 49)) +
         geom_point(data = out,
-                   aes(x = long, y = lat)) -> plot
-    return(list(out, plot))
+                   aes(x = long, y = lat),
+                   color = "red",
+                   size = 2) -> plot
+    png(filename = paste(search, ".png", sep = ""))
+    print(plot)
+    dev.off()
+    return(out)
 }
 
-place("dasle")
+place("saint remy les chevreuse")
