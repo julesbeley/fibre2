@@ -1,7 +1,5 @@
 rm(list = ls())
 library(ggplot2)
-library(httr) 
-library(sf)
 library(ggmap)
 France <- map_data("world", region = "France")
 
@@ -35,4 +33,4 @@ place <- function(search) {
     return(out)
 }
 
-place("saint remy les chevreuse")
+place("saint remy du val")
