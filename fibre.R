@@ -61,7 +61,7 @@ paldens <- colorQuantile("viridis", NULL, n = 5)
 
 # css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
 
-rm(deploiement, geo, pop)
+rm(deploiement, geo)
 
 leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>% 
     addTiles() %>% 
@@ -92,6 +92,21 @@ leaflet(merged, options = leafletOptions(preferCanvas = TRUE)) %>%
               group = "Densité de population") %>% 
     addLayersControl(baseGroups = c("FTTH", "Densité de population"),
                      options = layersControlOptions(collapsed = FALSE))
+
+merged2 <- left_join(merged, pop, by = "Code commune")
+
+ggplot(merged2) +
+    geom_point(aes(x = log(density), 
+                   y = Pourcentage,
+                   size = Population),
+               shape = 1,
+               alpha = 0.5) +
+    geom_smooth(aes(x = log(density), 
+                    y = Pourcentage,
+                    weight = Population),
+                method = "lm",
+                se = FALSE) +
+    scale_y_continuous(limits = c(0, 1))
 
 #library(widgetframe)
 #frameWidget(m)
