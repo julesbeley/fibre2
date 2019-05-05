@@ -7,6 +7,7 @@ library(viridis)
 library(rmapshaper)
 library(sf)
 library(units)
+library(scales)
 
 read_sf("./communes.json") -> geo
 
@@ -100,13 +101,48 @@ ggplot(merged2) +
                    y = Pourcentage,
                    size = Population),
                shape = 1,
-               alpha = 0.5) +
+               alpha = 0.5,
+               col = "mediumseagreen") +
     geom_smooth(aes(x = log(density), 
                     y = Pourcentage,
                     weight = Population),
                 method = "lm",
-                se = FALSE) +
-    scale_y_continuous(limits = c(0, 1))
+                se = FALSE,
+                col = "grey20") +
+    scale_y_continuous(limits = c(0, 1),
+                       labels = c("0%", "25%", "50%", "75%", "100%")) +
+    scale_x_continuous(labels = comma) +
+    scale_size_continuous(labels = comma, 
+                          limits = c(0, 471941),
+                          breaks = seq(from = 5000, 
+                                       to = 350000, 
+                                       by = 75000),
+                          range = c(3, 18)) +
+    theme(plot.title = element_text(size = 35, hjust = 0.5, vjust = 30),
+          plot.caption = element_text(size = 18, face = 3, vjust = -20),
+          axis.text.x = element_text(size = 20, colour = "black"),
+          axis.text.y = element_text(size = 20, colour = "black"),
+          axis.title.x = element_text(size = 25, colour = "black", vjust = -5),
+          axis.title.y = element_text(size = 25, colour = "black", vjust = 10),
+          axis.ticks.x = element_blank(),
+          axis.ticks.y = element_blank(),
+          panel.background = element_blank(),
+          panel.grid.major.x = element_line(color = "grey", size = 1),
+          panel.grid.major.y = element_line(color = "grey", size = 1),
+          legend.title = element_text(size = 20),
+          legend.text = element_text(size = 22),
+          legend.key = element_rect(fill = "white"),
+          plot.margin = unit(c(3, 5, 3, 5), "cm")) +
+    labs(title = "Densité de population et taux de bâtiments raccordables FttH",
+         caption = "Données: ARCEP et INSEE") +
+    xlab("Densité de population (échelle logarithmique)") +
+    ylab("Taux de bâtiments raccordables par commune") -> m
+
+png("merged2.png",
+    height = 1000,
+    width = 1600)
+m
+dev.off()
 
 #library(widgetframe)
 #frameWidget(m)
