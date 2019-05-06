@@ -33,4 +33,4 @@ place <- function(search) {
     return(out)
 }
 
-place("saint remy du val")
+place("le blanc mesnil")
